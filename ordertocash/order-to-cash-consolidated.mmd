@@ -1,0 +1,41 @@
+flowchart TD
+    A[Customer Request / Quote] --> B[Sales / Partner creates order]
+    B --> C[Validate order and pricing]
+    C --> D{Order line type}
+
+    D -->|Subscription| S1[Create Subscription line]
+    D -->|License| L1[Create License line]
+    D -->|Services| SV1[Create Services line]
+    D -->|Hardware| H1[Create Hardware line]
+
+    S1 --> S2[Check contract / renewal / entitlements]
+    L1 --> L2[Validate SKU, edition, compliance, seats]
+    SV1 --> SV3[Validate SOW, service scope, resources]
+    H1 --> H4[Check stock, lead time, shipping]
+
+    S2 --> O1[Approve order]
+    L2 --> O1
+    SV3 --> O1
+    H4 --> O1
+
+    O1 --> P1[Create order in CRM / ERP]
+    P1 --> P2[Route to fulfillment]
+
+    P2 --> P3{Line type}
+    P3 -->|Subscription| P4[Activate subscription / entitlement]
+    P3 -->|License| P5[Generate license key / token]
+    P3 -->|Services| P6[Assign service resources / project]
+    P3 -->|Hardware| P7[Pick, pack, ship hardware]
+
+    P4 --> D1[Deliver service]
+    P5 --> D1
+    P6 --> D1
+    P7 --> D1
+
+    D1 --> I1[Generate invoice]
+    I1 --> I2[Send invoice and payment terms]
+    I2 --> R1[Receive payment / cash application]
+    R1 --> A1[Reconcile accounting / revenue recognition]
+    A1 --> F1[Close order / renew or continue service]
+
+    F1 --> END[Order-to-cash complete]

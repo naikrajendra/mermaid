@@ -1,0 +1,61 @@
+flowchart LR
+    subgraph CustomerLayer[Customer & Sales]
+        C[Customer]
+        P[Partner / Sales Rep]
+        Q[Quote / Opportunity]
+    end
+
+    subgraph CorePlatform[Core Order Platform]
+        CRM[CRM]
+        CPQ[CPQ / Pricing]
+        OM[Order Management]
+        E[Entitlement / Contracts]
+    end
+
+    subgraph Fulfillment[Fulfillment & Delivery]
+        PR[Provisioning Engine]
+        SUB[Subscription Activation]
+        LIC[License Key Generator]
+        SVC[Service Delivery / PMO]
+        WH[Warehouse / Logistics]
+    end
+
+    subgraph Finance[Finance & Billing]
+        ERP[ERP / Billing]
+        INV[Invoice Engine]
+        AR[AR / Cash Application]
+        GL[GL / Revenue Recognition]
+    end
+
+    subgraph External[External Systems]
+        PAY[Payment Gateway]
+        BANK[Bank / Treasury]
+        TAX[Tax / Compliance]
+    end
+
+    C -->|Request| P
+    P -->|Quote and order| Q
+    Q -->|Opportunity data| CRM
+    CRM -->|Price & validate| CPQ
+    CPQ -->|Approved order| OM
+    OM -->|Contract checks| E
+    OM -->|Dispatch line fulfillment| PR
+
+    PR -->|Subscription line| SUB
+    PR -->|License line| LIC
+    PR -->|Services line| SVC
+    PR -->|Hardware line| WH
+
+    SUB -->|Activation status| ERP
+    LIC -->|License activation| ERP
+    SVC -->|Service milestones| ERP
+    WH -->|Shipment / receipt| ERP
+
+    ERP -->|Creates invoice| INV
+    INV -->|Send invoice| PAY
+    PAY -->|Payment receipt| AR
+    AR -->|Cash application| GL
+    GL -->|Reporting / compliance| ERP
+
+    ERP -->|Tax / statutory| TAX
+    AR -->|Settlement| BANK
