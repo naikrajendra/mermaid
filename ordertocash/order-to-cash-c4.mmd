@@ -1,32 +1,53 @@
 flowchart LR
-    Customer[Customer / End User]
-    Partner[Channel Partner / Sales]
-    Sales[Sales / Quote Management]
-    CRM[CRM]
-    CPQ[CPQ / Pricing]
-    ERP[ERP / Billing / AR]
-    OMS[Order Management]
-    Entitlement[Entitlement / License Platform]
-    Provisioning[Provisioning / Fulfillment]
-    Services[Services Delivery]
-    Warehouse[Warehouse / Logistics]
-    Payment[Payment Gateway / Banking]
-    Accounting[Accounting / GL / Revenue]
-    Support[Support / Case Mgmt]
+    subgraph CustomerExperience[Customer Experience]
+        Customer[Customer Portal]
+        Partner[Partner Portal]
+    end
 
-    Customer -->|Places request| Partner
-    Partner -->|Creates quote/order| Sales
-    Sales -->|Order details| CRM
-    CRM -->|Pricing rules| CPQ
-    CPQ -->|Approved order| OMS
-    OMS -->|Order validation| ERP
-    OMS -->|Check entitlements| Entitlement
+    subgraph SalesCommerce[Sales & Commerce Containers]
+        Quote[Quote Service]
+        SalesApp[Sales Experience App]
+        CRM[CRM Container]
+        CPQ[CPQ Container]
+    end
+
+    subgraph OrderFulfillment[Order & Fulfillment Containers]
+        OMS[Order Management Service]
+        Entitlement[Entitlement Service]
+        Provisioning[Provisioning Service]
+        ServiceOps[Service Delivery Container]
+    end
+
+    subgraph FinanceRevenue[Finance & Revenue Containers]
+        ERP[Billing & AR Container]
+        Payment[Payment Gateway Container]
+        Accounting[Accounting Container]
+    end
+
+    subgraph SupportOperations[Support & Operations]
+        Support[Case Management Container]
+        Warehouse[Warehouse / Logistics]
+    end
+
+    Customer -->|Browse / request| Partner
+    Partner -->|Quote & order intake| SalesApp
+    SalesApp -->|Opportunity data| Quote
+    Quote -->|Pricing request| CPQ
+    CPQ -->|Approved quote| CRM
+    CRM -->|Order details| OMS
+
+    OMS -->|Validation and order state| ERP
+    OMS -->|Check eligibility| Entitlement
     OMS -->|Dispatch fulfillment| Provisioning
+
     Provisioning -->|Activate subscription| Entitlement
-    Provisioning -->|Schedule service| Services
+    Provisioning -->|Schedule service work| ServiceOps
     Provisioning -->|Ship hardware| Warehouse
-    ERP -->|Invoice| Payment
+
+    ERP -->|Invoice to customer| Payment
     Payment -->|Payment receipt| Accounting
-    Accounting -->|Revenue / ledger| ERP
-    Services -->|Service updates| Support
+    Accounting -->|Revenue posting| ERP
+
+    ServiceOps -->|Service updates| Support
     Support -->|Case and usage| CRM
+    Support -->|Escalation notes| OMS
